@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Character():
-    def __init__(self, name, title, idn_poss,idn_subj, idn_verb, idn_verb_past, idn_third_present, health, maxHealth, level, strength, defense, magic, magic_defense, character_id,gold):
+    def __init__(self, name, title, idn_poss,idn_subj, idn_verb, idn_verb_past, idn_third_present, health, maxHealth, level, strength, defense, magic, magic_defense, character_id,gold,inventory_name):
         self.name = name
         self.title = title
         self.idn_poss = idn_poss                        ## possessive for corresponding identity (her)
@@ -29,12 +29,22 @@ class Character():
         self.magic_defense = magic_defense
         self.character_id = character_id                #for matching inventory
         self.gold = gold
+        self.inventory_name = inventory_name
 
         ## status section
-        self.is_dead: False
+        self.is_dead = False
+        self.can_be_looted = True
+        self.is_lootable = False
 
     def self_identify(self):
         print(f"Hello, my name is {self.name}. My health is {self.health}/{self.maxHealth}.")
+
+    def self_identify_inventory(self):
+        print(f"My inventory is called {self.inventory_name.name}.")
+        if self.inventory_name.space > 1:
+            print(f"Opening {self.name}'s inventory. There are currently {self.inventory_name.space} units remaining in a {self.inventory_name.maxSpace} unit bag. The contents are as follows:")
+        else:
+            print(f"Opening {self.name}'s inventory. There is currently {self.inventory_name.space} unit remaining in a {self.inventory_name.maxSpace} unit bag. The contents are as follows:")
 
     def take_damage(self,aggressor,dmg_amt,source): ## potions take negative damage, there is no need for a heal buff
         self.health -= dmg_amt
@@ -43,8 +53,11 @@ class Character():
         else:
             print(f"{self.name} {self.idn_third_present} healed {abs(dmg_amt)} damage from {aggressor.name}'s {source}!")
         if self.health <= 0:
-            self.is_dead = True
+            self.is_dead
             print(f"{self.name} {self.idn_third_present} died.")
+        if self.can_be_looted:
+            self.is_lootable
+            print(f"You may now loot {self.name}'s remains.")
         if self.health > self.maxHealth:
             self.health = self.maxHealth
         if self.health < 0:
@@ -62,41 +75,43 @@ class Item():
     ## maybe this shouldn't be a subclass...
 
     def identify(self):
-        print(f"{self.name}. {self.description} Takes up {self.space} units in inventory, and is worth {self.base_worth} gold.")
+        print(f"{self.name}. {self.description} Takes up {self.space} units in inventory, and is worth {self.base_worth} gold in the general market.")
 
 
 @dataclass
 class Inventory():
-    def __init__(self, owner, space, maxSpace,items): ## could be a problem if there are two characters with the same name, but we wont encouter that
-        self.owner = owner
+    def __init__(self, name,space, maxSpace,items): ## could be a problem if there are two characters with the same name, but we wont encouter that
+        self.name = name
         self.space = space
         self.maxSpace = maxSpace
         self.items = items ## json
 
-    def identify(self):
-        print(f"Opening {owner.name}'s inventory. There is currently {self.space} units remaining in a {self.maxspace} unit bag. The contents are as follows:")
-#       if self_items =
 
+    def add_item(self): ##add, remove item from inventory
+        print('add item')
 
+    def remove_item(self):
+        print('remove item')
 
+    def add_inventory_space(self):
+        print('permanently adds inventory space')
 
-
-
-you = Character('Cuckoo','the bird','her','she','is','was','has',10,10,1,5,5,5,5,1000,10)
-your_inv = Inventory('you',100,100,{})
-wolfie = Character('Wolfie','the wolf','his','he','is','was','has',10,10,1,5,5,5,5,2000,10)
+your_inv = Inventory('Cuckoo\'s Inventory',10,10,{})
+yous = Character('Cuckoo','the bird','her','she','is','was','has',10,10,1,5,5,5,5,1000,10,your_inv)
+wolfies_inv = Inventory('Wolfie\'s Inventory',10,10,{})
+wolfie = Character('Wolfie','the wolf','his','he','is','was','has',10,10,1,5,5,5,5,2000,10,wolfies_inv)
 potion = Item('Health Potion',1,'A simple health potion. Heals 3 points.',5)
 
-you.self_identify()
-you.take_damage(wolfie,5,'scratch')
-you.self_identify()
-you.take_damage(wolfie,-100,'health potion')
-you.self_identify()
-you.take_damage(wolfie,5,'scratch')
-you.take_damage(wolfie,6,'scratch')
-you.self_identify()
+yous.self_identify()
+yous.take_damage(wolfie,5,'scratch')
+yous.self_identify()
+yous.take_damage(wolfie,-100,'health potion')
+yous.self_identify()
+yous.take_damage(wolfie,5,'scratch')
+yous.take_damage(wolfie,6,'scratch')
+yous.self_identify()
+yous.self_identify_inventory()
 potion.identify()
-your_inv.identify()
 
 
 
