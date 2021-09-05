@@ -67,11 +67,11 @@ class Item():
 
 @dataclass
 class Inventory():
-    def __init__(self, owner, space, maxSpace): ## could be a problem if there are two characters with the same name, but we wont encouter that
-        self.character_id = {owner.character_id}
+    def __init__(self, owner, space, maxSpace,items): ## could be a problem if there are two characters with the same name, but we wont encouter that
+        self.owner = owner
         self.space = space
         self.maxSpace = maxSpace
-        self.items = {} ## json
+        self.items = items ## json
 
     def identify(self):
         print(f"Opening {owner.name}'s inventory. There is currently {self.space} units remaining in a {self.maxspace} unit bag. The contents are as follows:")
@@ -83,7 +83,7 @@ class Inventory():
 
 
 you = Character('Cuckoo','the bird','her','she','is','was','has',10,10,1,5,5,5,5,1000,10)
-your_inv = Inventory('you',100,100)
+your_inv = Inventory('you',100,100,{})
 wolfie = Character('Wolfie','the wolf','his','he','is','was','has',10,10,1,5,5,5,5,2000,10)
 potion = Item('Health Potion',1,'A simple health potion. Heals 3 points.',5)
 
