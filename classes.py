@@ -55,9 +55,9 @@ class Character():
         if self.health <= 0:
             self.is_dead
             print(f"{self.name} {self.idn_third_present} died.")
-        if self.can_be_looted:
-            self.is_lootable
-            print(f"You may now loot {self.name}'s remains.")
+            if self.can_be_looted:
+                self.is_lootable
+                print(f"You may now loot {self.name}'s remains.")
         if self.health > self.maxHealth:
             self.health = self.maxHealth
         if self.health < 0:
